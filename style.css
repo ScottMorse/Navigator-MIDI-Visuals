@@ -1,0 +1,59 @@
+body{
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000000;
+}
+
+#piano-keys{
+  display: flex;
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  margin: 0;
+}
+
+.piano-key {
+  transition: background-color .15s ease;
+  box-sizing: border-box;
+}
+
+.piano-key.white {
+  height: 30vh;
+  border: 2px solid rgb(32, 41, 41);
+  border-bottom: none;
+  border-left: none;
+  background-color: #0d0d0d;
+}
+
+.piano-key.black{
+  height: 20vh;
+  position: absolute;
+  margin-bottom: 10vh;
+  background: black;
+  border: 1.5px solid rgb(32, 41, 41);
+  border-top: none;
+  z-index: 100;
+}
+
+.piano-key.white:last-child{
+  border-right: none;
+}
+
+@keyframes blinkNote {
+  from{
+    filter: brightness(3)
+  }
+  to {
+    filter: brightness(1)
+  }
+}
+
+@keyframes reverseBlinkNote {
+  from {
+    filter: brightness(0.33)
+  }
+  to {
+    filter: brightness(1)
+  }
+}
