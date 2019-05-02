@@ -1,8 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Teko:300,400');
+
 body{
   margin: 0;
   width: 100vw;
   height: 100vh;
   background-color: #000000;
+}
+
+#note-tracker {
+  color: magenta;
+  position: absolute;
+  margin-left: 10px;
+  font-size: 50px;
+  font-family: Teko;
+  font-weight: 300
 }
 
 #piano-keys{
@@ -11,29 +22,43 @@ body{
   position: fixed;
   bottom: 0;
   margin: 0;
+  background-image: linear-gradient(to right, rgb(211, 0, 158),orange, yellow)
 }
 
 .piano-key {
-  transition: background-color .15s ease;
   box-sizing: border-box;
+  background-color: black;
 }
 
 .piano-key.white {
-  height: 30vh;
-  border: 2px solid rgb(32, 41, 41);
-  border-bottom: none;
-  border-left: none;
-  background-color: #0d0d0d;
+  transition: background-color .15s ease;
+  height: 40vh;
+}
+
+.piano-key.white.eb{
+  border-right: 4px solid rgb(0,0,0);
 }
 
 .piano-key.black{
-  height: 20vh;
+  height: 30vh;
   position: absolute;
   margin-bottom: 10vh;
-  background: black;
-  border: 1.5px solid rgb(32, 41, 41);
+  border: 4px solid black;
   border-top: none;
-  z-index: 100;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  background-image: linear-gradient(to right, rgb(211, 0, 158),orange, yellow);
+  background-size: 100vw;
+  background: black;
+}
+
+.piano-key.black > div {
+  height: 10vh;
+  width: 4px;
+  background: black;
+  position: absolute;
+  bottom: calc(-10vh - 4px);
 }
 
 .piano-key.white:last-child{
@@ -55,5 +80,23 @@ body{
   }
   to {
     filter: brightness(1)
+  }
+}
+
+@keyframes fadeIn {
+  from{
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1
+  }
+  to {
+    opacity: 0
   }
 }
