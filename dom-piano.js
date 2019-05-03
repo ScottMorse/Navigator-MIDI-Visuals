@@ -6,6 +6,9 @@ class DomPiano {
     const pianoKeysEl = document.getElementById('piano-keys')
     const pianoKeyElReference = {}
 
+    const keyScoresEl = document.getElementById('key-scores')
+    const keyScoreElReference = {}
+
     let previousEl
     for( const midiVal in midiRef ){
       const { octave, name } = midiRef[midiVal]
@@ -38,21 +41,41 @@ class DomPiano {
     let pos = 0;
     for(const key in pianoKeyElReference){
       const el = pianoKeyElReference[key]
-      const isBlackKey = el.dataset.color === 'black'
-      const offset = isBlackKey ? prctPerWhiteKey * .6 : prctPerWhiteKey
-      pos += isBlackKey ? offset : offset / 2
-      el.style.minWidth = el.style.maxWidth = offset + 'vw'
-      el.style.transform = isBlackKey ? `translateX(${prctPerWhiteKey * .7 + 'vw'})` : ''
-      el.dataset.bPos = -pos + 'vw' 
+
+      const keyScoreEl = document.createElement('div')
+      keyScoreEl.className = "key-score"
+
+      let offset
+      if(el.dataset.color === "black"){
+        offset = prctPerWhiteKey * .6
+        pos += offset
+        el.style.transform = `translateX(${prctPerWhiteKey * .7 + 'vw'})`
+        el.dataset.bPos = -pos + 'vw'
+      }
+      else{
+        offset = prctPerWhiteKey
+        pos += offset / 2
+      }
+      keyScoreEl.style.minWidth = keyScoreEl.style.maxWidth = el.style.minWidth = el.style.maxWidth = offset + 'vw'
+
+      keyScoresEl.appendChild(keyScoreEl)
+      keyScoreElReference[key] = keyScoreEl
     }
 
     this.elRef = pianoKeyElReference
     this.noteRef = noteReference
+    this.keyScoreElRef = keyScoreElReference
+    this.score = 0
+    this.scoreTrackerEl = document.getElementById('score-tracker')
     this.noteTracker = new NoteTracker(noteReference)
   }
 
-  noteOn = (noteName) => {
+  noteOn = (noteName,velocity) => {
     const el = this.elRef[noteName]
+
+    this.score += velocity
+    this.scoreTrackerEl.innerHTML = `Jazz Points: ` + this.score
+
     this.noteTracker.add(noteName)
   
     if(el.dataset.color === 'black'){
@@ -83,7 +106,22 @@ class DomPiano {
   }
 
   blinkNote = (noteName, velocity) => {
+    const keyScoreEl = this.keyScoreElRef[noteName]
 
+    keyScoreEl.innerHTML = "+" + velocity
+    keyScoreEl.style.transition = ''
+    keyScoreEl.style.transform = 'translateY(0vh)'
+    keyScoreEl.style.opacity = 0
+    keyScoreEl.innerHTML = "+" + velocity
+    void keyScoreEl.offsetWidth
+    keyScoreEl.style.transition = 'opacity 0.5s ease, transform 1s ease'
+    keyScoreEl.style.transform = `translateY(-${velocity / 2}vh)`
+    keyScoreEl.style.opacity = 1
+    setTimeout(() => {
+      keyScoreEl.style.opacity = 0
+      keyScoreEl.style.transform =  'translateY(0vh)'
+      keyScoreEl.style.transition = ''
+    },1000)
   }
 }
 

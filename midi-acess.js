@@ -22,6 +22,7 @@ class MIDIAccess {
     this.noteReference = noteReference
     this.domPiano = domPiano
     this.pedaledNotes = []
+    this.pressedNotes = []
     this.pedalDown = false
   }
 
@@ -73,13 +74,18 @@ class MIDIAccess {
       this.pedaledNotes = pNotesCopy
     }
 
-    this.domPiano.blinkNote(note.name,note.keyColor)
-    this.domPiano.noteOn(note.name)
+    this.domPiano.blinkNote(note.name,velocity)
+    this.domPiano.noteOn(note.name,velocity)
+    this.pressedNotes.push(note.name)
   }
 
   handleNoteOff = (noteValue) => {
     const note = new MIDINote(noteValue,this.noteReference.midiRef)
-  
+    
+    let pressedNotesCopy = this.pressedNotes.slice()
+    pressedNotesCopy.splice(pressedNotesCopy.indexOf(note.name),1)
+    this.pressedNotes = pressedNotesCopy
+
     if(!this.pedalDown){
       this.domPiano.noteOff(note.name)
     }
@@ -94,9 +100,22 @@ class MIDIAccess {
 
   handlePedalPress = () => {
     this.pedalDown = !this.pedalDown
-    if(!pedalDown){
-      this.pedaledNotes.forEach(notename => this.domPiano.noteOff(notename))
-      this.pedaledNotes = []
+    if(!this.pedalDown){
+      let pedaledNotesCopy = this.pedaledNotes.slice()
+      for(const note of this.pedaledNotes){
+        if(!this.pressedNotes.includes(note)){
+          this.domPiano.noteOff(note)
+          pedaledNotesCopy.splice(pedaledNotesCopy.indexOf(note),1)
+        }
+      }
+      this.pedaledNotes = pedaledNotesCopy
+    }
+    else{
+      for(const noteName of this.pressedNotes){
+        if(!this.pedaledNotes.includes(noteName)){
+          this.pedaledNotes.push(noteName)
+        }
+      }
     }
   }
 }
