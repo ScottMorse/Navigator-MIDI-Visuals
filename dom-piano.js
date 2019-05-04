@@ -101,7 +101,7 @@ class DomPiano {
       setTimeout(() => el.style.animation = '',150)
     }
     else{
-      el.style.backgroundColor = 'black' 
+      el.style.backgroundColor = 'rgb(228, 216, 209)'      // See also style.css .piano-key
     }
   }
 

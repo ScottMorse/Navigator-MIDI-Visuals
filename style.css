@@ -50,12 +50,12 @@ body{
 
 .piano-key {
   box-sizing: border-box;
-  background-color: black;
+  background-color: rgb(228, 216, 209);
 }
 
 .piano-key.white {
   transition: background-color .15s ease;
-  height: 40vh;
+  height: 32vh;
 }
 
 .piano-key.white.eb{
@@ -63,7 +63,7 @@ body{
 }
 
 .piano-key.black{
-  height: 30vh;
+  height: 22vh;
   position: absolute;
   margin-bottom: 10vh;
   border: 4px solid black;
