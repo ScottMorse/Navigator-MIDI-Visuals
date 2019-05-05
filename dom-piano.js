@@ -71,7 +71,6 @@ class DomPiano {
   }
 
   getNoteColor = (note) => {
-    console.log('getNoteColor() with ' + note)
     switch (note) {
       case 'C':   return 'rgb(255,0,0)';         break;
       case 'Db':  return 'rgb(204,102,102)';     break;
@@ -89,7 +88,6 @@ class DomPiano {
   }
 
   getNote = (noteName, isBlack) => {
-    console.log('getNote() with ' + noteName)
     return noteName.substr(0, isBlack ? 2 : 1)
   }
 
