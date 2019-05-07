@@ -84,7 +84,7 @@ body{
 }
 
 .piano-key.white:last-child{
-  border-right: none;
+  border-right: 4px solid rgb(0,0,0);
 }
 
 @keyframes blinkNote {

@@ -1,5 +1,4 @@
 class DomPiano {
-  
   constructor(minOctave, maxOctave, noteReference){
     const { midiRef } = noteReference
 
@@ -13,24 +12,38 @@ class DomPiano {
     for( const midiVal in midiRef ){
       const { octave, name } = midiRef[midiVal]
       if(octave >= minOctave && octave <= maxOctave){
-        const el = document.createElement('div')
-        pianoKeyElReference[name] = el
-        el.id = 'piano-key-' + name
-        el.className = 'piano-key'
-        if(name.includes('b')){
-          el.className += ' black'
-          el.dataset.color = 'black'
-          el.appendChild(document.createElement('div'))
-          previousEl && previousEl.appendChild(el)
-        }
-        else{
+        if (octave < maxOctave) {
+          // Standard (full) octaves
+          const el = document.createElement('div')
+          pianoKeyElReference[name] = el
+          el.id = 'piano-key-' + name
+          el.className = 'piano-key'
+          if(name.includes('b')){
+            el.className += ' black'
+            el.dataset.color = 'black'
+            el.appendChild(document.createElement('div'))
+            previousEl && previousEl.appendChild(el)
+          }
+          else{
+            el.className += ' white'
+            el.dataset.color = 'white'
+            if(name.match(/[EB]\d/)){
+              el.className += ' eb'
+            }
+            pianoKeysEl.appendChild(el)
+            previousEl = el
+          }  
+        } else {
+          // Single C note at the end to make 88 keys
+          const el = document.createElement('div')
+          pianoKeyElReference[name] = el
+          el.id = 'piano-key-' + name
+          el.className = 'piano-key'
           el.className += ' white'
           el.dataset.color = 'white'
-          if(name.match(/[EB]\d/)){
-            el.className += ' eb'
-          }
           pianoKeysEl.appendChild(el)
           previousEl = el
+          break
         }
       }
     }
