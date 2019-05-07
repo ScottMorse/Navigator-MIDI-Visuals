@@ -1,5 +1,4 @@
 class DomPiano {
-  
   constructor(minOctave, maxOctave, noteReference){
     const { midiRef } = noteReference
 
@@ -13,24 +12,38 @@ class DomPiano {
     for( const midiVal in midiRef ){
       const { octave, name } = midiRef[midiVal]
       if(octave >= minOctave && octave <= maxOctave){
-        const el = document.createElement('div')
-        pianoKeyElReference[name] = el
-        el.id = 'piano-key-' + name
-        el.className = 'piano-key'
-        if(name.includes('b')){
-          el.className += ' black'
-          el.dataset.color = 'black'
-          el.appendChild(document.createElement('div'))
-          previousEl && previousEl.appendChild(el)
-        }
-        else{
+        if (octave < maxOctave) {
+          // Standard (full) octaves
+          const el = document.createElement('div')
+          pianoKeyElReference[name] = el
+          el.id = 'piano-key-' + name
+          el.className = 'piano-key'
+          if(name.includes('b')){
+            el.className += ' black'
+            el.dataset.color = 'black'
+            el.appendChild(document.createElement('div'))
+            previousEl && previousEl.appendChild(el)
+          }
+          else{
+            el.className += ' white'
+            el.dataset.color = 'white'
+            if(name.match(/[EB]\d/)){
+              el.className += ' eb'
+            }
+            pianoKeysEl.appendChild(el)
+            previousEl = el
+          }  
+        } else {
+          // Single C note at the end to make 88 keys
+          const el = document.createElement('div')
+          pianoKeyElReference[name] = el
+          el.id = 'piano-key-' + name
+          el.className = 'piano-key'
           el.className += ' white'
           el.dataset.color = 'white'
-          if(name.match(/[EB]\d/)){
-            el.className += ' eb'
-          }
           pianoKeysEl.appendChild(el)
           previousEl = el
+          break
         }
       }
     }
@@ -70,6 +83,27 @@ class DomPiano {
     this.noteTracker = new NoteTracker(noteReference)
   }
 
+  getNoteColor = (note) => {
+    switch (note) {
+      case 'C':   return 'rgb(255,0,0)';         break;
+      case 'Db':  return 'rgb(204,102,102)';     break;
+      case 'D':   return 'rgb(255,153,0)';       break;
+      case 'Eb':  return 'rgb(248,204,153)';     break;
+      case 'E':   return 'rgb(255,255,0)';       break;
+      case 'F':   return 'rgb(0,255,0)';         break;
+      case 'Gb':  return 'rgb(102,204,102)';     break;
+      case 'G':   return 'rgb(0,0,255)';         break;
+      case 'Ab':  return 'rgb(102,102,204)';     break;
+      case 'A':   return 'rgb(102,51,204)';      break;
+      case 'Bb':  return 'rgb(153,85,208)';      break;
+      case 'B':   return 'rgb(255,102,255)';     break;
+    }
+  }
+
+  getNote = (noteName, isBlack) => {
+    return noteName.substr(0, isBlack ? 2 : 1)
+  }
+
   noteOn = (noteName,velocity) => {
     const el = this.elRef[noteName]
 
@@ -80,13 +114,15 @@ class DomPiano {
   
     if(el.dataset.color === 'black'){
       el.style.backgroundSize = '100vw'
-      el.style.backgroundImage = 'linear-gradient(to right, rgb(211, 0, 158),orange, yellow)'
       el.style.backgroundPositionX = el.dataset.bPos
       el.style.animation = 'fadeIn .15s ease'
+      el.style.backgroundColor = this.getNoteColor(this.getNote(noteName, true))
       setTimeout(() => el.style.animation = '',150)
     }
     else{
-      el.style.backgroundColor = 'rgb(0,0,0,0)'
+      el.style.animation = 'fadeIn .15s ease'
+      el.style.backgroundColor = this.getNoteColor(this.getNote(noteName, false))
+      setTimeout(() => el.style.animation = '',150)
     }
   }
 
@@ -101,7 +137,7 @@ class DomPiano {
       setTimeout(() => el.style.animation = '',150)
     }
     else{
-      el.style.backgroundColor = 'black' 
+      el.style.backgroundColor = 'rgb(228, 216, 209)'      // See also style.css .piano-key
     }
   }
 
